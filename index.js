@@ -4,5 +4,6 @@ const app = express();
 app.get('/', (req, res) => {
   res.send({ hi: 'there' });
 });
-
-app.listen(5000);
+//dynamic port binding. Tells the server if we don't have another port idr 5000
+var PORT_NUMBER = server.listen(process.env.PORT || 5000);
+app.listen(PORT_NUMBER);
