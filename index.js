@@ -1,9 +1,26 @@
-const express = require('express');
+const express = require("express");
+const mongoose = require("mongoose");
+const CookieSession = require("cookie-session");
+const passport = require("passport");
+const keys = require("./config/keys");
+require("./models/User");
+require("./services/passport");
+
+mongoose.connect(keys.mongoURI);
+
 const app = express();
 
-app.get('/', (req, res) => {
-  res.send(hello);
-});
-//dynamic port binding. Tells the server if we don't have another port idr 5000
-var PORT_NUMBER = process.env.PORT || 5000;
-app.listen(PORT_NUMBER);
+app.use(
+  CookieSession({
+    MaxAge: 30 * 24 * 60 * 60 * 1000,
+    keys: [keys.cookieKey]
+  })
+);
+app.use(passport.initialize());
+app.use(passport.session());
+
+require("./routes/authRoutes")(app);
+
+//dynamic port binding. Tells the server if we don't have another port id 5000
+const PORT = process.env.PORT || 5000;
+app.listen(PORT);
